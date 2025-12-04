@@ -82,10 +82,36 @@ public class VehicleDao {
         return vehicles;
     }
 
-    private void displayVehicles(List<Vehicle> vehicles) {
-        for (Vehicle vehicle : vehicles) {
-            System.out.println(vehicle);
+    public List<Vehicle> processGetByVehicleTypeRequest(String type) throws SQLException{
+        List<Vehicle> vehicles = new ArrayList<>();
+        String query = "select * from vehicles where `Vehicle Type` = ? and sold = false";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, type);
+
+            try (ResultSet rs = stmt.executeQuery()){
+                while (rs.next()){
+                    vehicles.add(mapResultSetToVehicle(rs));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+        return vehicles;
+    }
+
+    public List<Vehicle> getAllVehicle() throws SQLException{
+        List<Vehicle> vehicles = new ArrayList<>();
+        String query = "select * from vehicles where sold = false";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            try (ResultSet rs = stmt.executeQuery()){
+                while (rs.next()){
+                    vehicles.add(mapResultSetToVehicle(rs));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return vehicles;
     }
 
     public void showVehicles() {
