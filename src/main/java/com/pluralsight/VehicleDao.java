@@ -1,30 +1,32 @@
 package com.pluralsight;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.List;
+import java.sql.*;
+import java.util.*;
 
 public class VehicleDao {
     private final Connection connection;
-    Dealership dealership;
+
     public VehicleDao(Connection connection) {
         this.connection = connection;
     }
 
-    private void init() {
-        DealershipFileManager dealershipFileManager = new DealershipFileManager();
-        this.dealership = dealershipFileManager.getDealership();
-    }
 
-    public void processGetByPriceRequest() {
-        float minPrice = ConsoleHelper.promptForFloat("Please enter the minimum price range you're searching for");
-        float maxPrice = ConsoleHelper.promptForFloat("Please enter the maximum price range you're searching for");
+    public List<Vehicle> processGetByPriceRequest(double minPrice, double maxPrice) throws SQLException {
+        List<Vehicle> vehicles = new ArrayList<>();
+        String query = "select * from vehicles where price between ? and ? sold = false";
+        try (PreparedStatement stmt = connection.prepareStatement(query)){
+            stmt.setDouble(1,minPrice);
+            stmt.setDouble(2,maxPrice);
 
-        List<Vehicle> vehicles = dealership.getVehicleByPrice(minPrice, maxPrice);
-        displayVehicles(vehicles);
+            try (ResultSet rs = stmt.executeQuery()){
+                while (rs.next()){
+                    vehicles.add(mapResultSetToVehicle(rs));
+                }
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+        return vehicles;
     }
 
     private void displayVehicles(List<Vehicle> vehicles) {
@@ -32,6 +34,7 @@ public class VehicleDao {
             System.out.println(vehicle);
         }
     }
+
     public void showVehicles() {
 
         String username = "root";
@@ -70,6 +73,18 @@ public class VehicleDao {
             System.out.println("error");
             e.printStackTrace();
         }
+    }
+    private Vehicle mapResultSetToVehicle(ResultSet rs) throws SQLException {
+        return new Vehicle(
+                rs.getInt("VIN"),
+                rs.getInt("Year"),
+                rs.getString("Make"),
+                rs.getString("Model"),
+                rs.getString("Vehicle Type"),
+                rs.getString("Color"),
+                rs.getInt("Odometer"),
+                rs.getDouble("price")
+        );
     }
 }
 
