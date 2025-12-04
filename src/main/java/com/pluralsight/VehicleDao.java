@@ -137,6 +137,22 @@ public class VehicleDao {
         }
     }
 
+    public void removeVehicles(int vin) throws SQLException{
+        String query = "delete from vehicles where vin = ?";
+
+        try(PreparedStatement stmt = connection.prepareStatement(query)){
+            stmt.setInt(1,vin);
+            int rowsAffected = stmt.executeUpdate();
+            if (rowsAffected > 0) {
+                System.out.println("Vehicle removed!");
+            } else {
+                System.out.println("Vehicle VIN: " + vin + "not found");
+            }
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     private Vehicle mapResultSetToVehicle(ResultSet rs) throws SQLException {
         return new Vehicle(
                 rs.getInt("VIN"),
