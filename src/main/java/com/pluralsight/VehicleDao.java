@@ -13,7 +13,7 @@ public class VehicleDao {
 
     public List<Vehicle> processGetByPriceRequest(double minPrice, double maxPrice) throws SQLException {
         List<Vehicle> vehicles = new ArrayList<>();
-        String query = "select * from vehicles where price between ? and ? sold = false";
+        String query = "select * from vehicles where price between ? and ? and sold = false";
         try (PreparedStatement stmt = connection.prepareStatement(query)){
             stmt.setDouble(1,minPrice);
             stmt.setDouble(2,maxPrice);
@@ -49,9 +49,27 @@ public class VehicleDao {
 
     public List<Vehicle> processGetByColorRequest(String color) throws SQLException{
         List<Vehicle> vehicles = new ArrayList<>();
-        String query = "select * from vehicles where make = ? and model = ? and sold = false";
+        String query = "select * from vehicles where color = ? and sold = false";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, color);
+
+            try (ResultSet rs = stmt.executeQuery()){
+                while (rs.next()){
+                    vehicles.add(mapResultSetToVehicle(rs));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return vehicles;
+    }
+
+    public List<Vehicle> processGetByMileageRequest(int minMileage, int maxMileage) throws SQLException{
+        List<Vehicle> vehicles = new ArrayList<>();
+        String query = "select * from vehicles where mileage between ? and ? and sold = false";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, minMileage);
+            stmt.setInt(2, maxMileage);
 
             try (ResultSet rs = stmt.executeQuery()){
                 while (rs.next()){
