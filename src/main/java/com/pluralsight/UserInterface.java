@@ -1,5 +1,7 @@
 package com.pluralsight;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 
@@ -8,8 +10,14 @@ public class UserInterface {
     // -----------------------------------------------------------
 
     // Page 7 introducing "dealership : Dealership"
+
+    private Connection connection;
+    private VehicleDao vehicleDao;
+    private SalesDao salesDao;
+    private LeaseDao leaseDao;
+    private int command;
+
     Dealership dealership;
-    int command;
     // -----------------------------------------------------------
     public void userInterface() {
         init();
@@ -54,6 +62,7 @@ public class UserInterface {
 
             command = ConsoleHelper.promptForInt("Enter your command".trim());
             System.out.println();
+
             switch (command) {
                 case 1:
                     processGetByPriceRequest();
@@ -111,6 +120,7 @@ public class UserInterface {
                     break;
 
                 case 99:
+                    closeConnection();
                     return;
 
                 default:
@@ -121,8 +131,29 @@ public class UserInterface {
     }
 
     private void init() {
-        DealershipFileManager dealershipFileManager = new DealershipFileManager();
-        this.dealership = dealershipFileManager.getDealership();
+        try {
+            connection = DatabaseManager.getConnection();
+
+            vehicleDao = new VehicleDao(connection);
+            salesDao = new SalesDao(connection);
+            leaseDao = new LeaseDao(connection);
+
+            System.out.println("Connected to database successfully!");
+        } catch (SQLException e) {
+            System.out.println("Failed to connect to database");
+            e.printStackTrace();
+        }
+    }
+
+    private void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Connection closed.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void processGetByPriceRequest() {
