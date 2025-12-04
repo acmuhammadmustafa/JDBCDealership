@@ -14,30 +14,30 @@ public class VehicleDao {
     public List<Vehicle> processGetByPriceRequest(double minPrice, double maxPrice) throws SQLException {
         List<Vehicle> vehicles = new ArrayList<>();
         String query = "select * from vehicles where price between ? and ? and sold = false";
-        try (PreparedStatement stmt = connection.prepareStatement(query)){
-            stmt.setDouble(1,minPrice);
-            stmt.setDouble(2,maxPrice);
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setDouble(1, minPrice);
+            stmt.setDouble(2, maxPrice);
 
-            try (ResultSet rs = stmt.executeQuery()){
-                while (rs.next()){
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
                     vehicles.add(mapResultSetToVehicle(rs));
                 }
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return vehicles;
     }
 
-    public List<Vehicle> processGetByMakeModelRequest(String make, String model) throws SQLException{
+    public List<Vehicle> processGetByMakeModelRequest(String make, String model) throws SQLException {
         List<Vehicle> vehicles = new ArrayList<>();
         String query = "select * from vehicles where make = ? and model = ? and sold = false";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, make);
             stmt.setString(2, model);
 
-            try (ResultSet rs = stmt.executeQuery()){
-                while (rs.next()){
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
                     vehicles.add(mapResultSetToVehicle(rs));
                 }
             } catch (SQLException e) {
@@ -47,14 +47,14 @@ public class VehicleDao {
         return vehicles;
     }
 
-    public List<Vehicle> processGetByColorRequest(String color) throws SQLException{
+    public List<Vehicle> processGetByColorRequest(String color) throws SQLException {
         List<Vehicle> vehicles = new ArrayList<>();
         String query = "select * from vehicles where color = ? and sold = false";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, color);
 
-            try (ResultSet rs = stmt.executeQuery()){
-                while (rs.next()){
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
                     vehicles.add(mapResultSetToVehicle(rs));
                 }
             } catch (SQLException e) {
@@ -64,15 +64,15 @@ public class VehicleDao {
         return vehicles;
     }
 
-    public List<Vehicle> processGetByMileageRequest(int minMileage, int maxMileage) throws SQLException{
+    public List<Vehicle> processGetByMileageRequest(int minMileage, int maxMileage) throws SQLException {
         List<Vehicle> vehicles = new ArrayList<>();
         String query = "select * from vehicles where mileage between ? and ? and sold = false";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setInt(1, minMileage);
             stmt.setInt(2, maxMileage);
 
-            try (ResultSet rs = stmt.executeQuery()){
-                while (rs.next()){
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
                     vehicles.add(mapResultSetToVehicle(rs));
                 }
             } catch (SQLException e) {
@@ -82,14 +82,14 @@ public class VehicleDao {
         return vehicles;
     }
 
-    public List<Vehicle> processGetByVehicleTypeRequest(String type) throws SQLException{
+    public List<Vehicle> processGetByVehicleTypeRequest(String type) throws SQLException {
         List<Vehicle> vehicles = new ArrayList<>();
         String query = "select * from vehicles where `Vehicle Type` = ? and sold = false";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             stmt.setString(1, type);
 
-            try (ResultSet rs = stmt.executeQuery()){
-                while (rs.next()){
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
                     vehicles.add(mapResultSetToVehicle(rs));
                 }
             } catch (SQLException e) {
@@ -99,12 +99,12 @@ public class VehicleDao {
         return vehicles;
     }
 
-    public List<Vehicle> getAllVehicle() throws SQLException{
+    public List<Vehicle> getAllVehicle() throws SQLException {
         List<Vehicle> vehicles = new ArrayList<>();
         String query = "select * from vehicles where sold = false";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            try (ResultSet rs = stmt.executeQuery()){
-                while (rs.next()){
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
                     vehicles.add(mapResultSetToVehicle(rs));
                 }
             } catch (SQLException e) {
@@ -114,45 +114,29 @@ public class VehicleDao {
         return vehicles;
     }
 
-    public void showVehicles() {
+    // -----------------------------------------------
+    public void addVehicles(Vehicle vehicle) {
 
-        String username = "root";
-        String password = "yearup";
-        String database = "SQLDealership";
-        String databaseurl = "jdbc:mysql://localhost:3306/" + database;
+        String query = "insert into vehicles (VIN, Year, Make, Model, `Vehicle Type`, Color, Odometer, price, sold from vehicles)"
+                + "values (?, ?, ?, ?, ?, ?, ?, ?, false)";
 
-        try (Connection connection = DriverManager.getConnection(databaseurl, username, password);
-             PreparedStatement preparedStatement = connection.prepareStatement(
-                     "SELECT VIN, Year, Make, Model, `Vehicle Type`, Color, Odometer, price, Sold FROM vehicles");
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-
-            while (resultSet.next()) {
-                System.out.printf(
-                        "Vehicle == " +
-                                "VIN: %d" +
-                                " | Year: %d" +
-                                " | Make: %s" +
-                                " | Model: %s" +
-                                " | Vehicle Type: %s" +
-                                " | Color: %s" +
-                                " | Odometer/Mileage: %d" +
-                                " | Price: %.2f" +
-                                " ==" + '\n',
-                        resultSet.getInt("VIN"),
-                        resultSet.getInt("Year"),
-                        resultSet.getString("Make"),
-                        resultSet.getString("Model"),
-                        resultSet.getString("Vehicle Type"),
-                        resultSet.getString("Color"),
-                        resultSet.getInt("Odometer"),
-                        resultSet.getFloat("price"));
-            }
-
-        } catch (Exception e) {
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, vehicle.getVin());
+            stmt.setInt(2, vehicle.getYear());
+            stmt.setString(3, vehicle.getMake());
+            stmt.setString(4, vehicle.getModel());
+            stmt.setString(5, vehicle.getVehicleType());
+            stmt.setString(6, vehicle.getColor());
+            stmt.setInt(7, vehicle.getOdometer());
+            stmt.setDouble(8, vehicle.getPrice());
+            stmt.executeUpdate();
+            System.out.println("Vehicle added successfully!");
+        } catch (SQLException e) {
             System.out.println("error");
             e.printStackTrace();
         }
     }
+
     private Vehicle mapResultSetToVehicle(ResultSet rs) throws SQLException {
         return new Vehicle(
                 rs.getInt("VIN"),
@@ -166,4 +150,3 @@ public class VehicleDao {
         );
     }
 }
-
