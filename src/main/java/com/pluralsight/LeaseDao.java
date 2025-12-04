@@ -18,7 +18,7 @@ public class LeaseDao {
             stmt.setString(1, contract.getDate());
             stmt.setString(2, contract.getCustomerName());
             stmt.setString(3, contract.getEmail());
-            stmt.setString(4, String.valueOf(contract.getVehicleSold().getVin()));
+            stmt.setString(4, contract.getVehicleSold().getVin());
             stmt.setDouble(5, contract.getEndValue());
             stmt.setDouble(6, contract.getLeaseFee());
             stmt.setDouble(7, contract.getTotalPrice());
@@ -35,7 +35,7 @@ public class LeaseDao {
         }
     }
 
-    private void markVehicleAsSold(int vin) {
+    private void markVehicleAsSold(String vin) {
         String query = "update vehicles set Sold = true where vin = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {

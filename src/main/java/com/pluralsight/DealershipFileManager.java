@@ -32,7 +32,7 @@ public class DealershipFileManager {
 
                 String[] part = lineFromString.split("\\|");
 
-                int vin = Integer.parseInt(part[0]);
+                String vin = part[0];
                 int year = Integer.parseInt(part[1]);
                 String make = part[2];
                 String model = part[3];

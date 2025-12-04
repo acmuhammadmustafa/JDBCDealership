@@ -121,7 +121,7 @@ public class VehicleDao {
                 + "values (?, ?, ?, ?, ?, ?, ?, ?, false)";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, vehicle.getVin());
+            stmt.setString(1, vehicle.getVin());
             stmt.setInt(2, vehicle.getYear());
             stmt.setString(3, vehicle.getMake());
             stmt.setString(4, vehicle.getModel());
@@ -155,7 +155,7 @@ public class VehicleDao {
 
     private Vehicle mapResultSetToVehicle(ResultSet rs) throws SQLException {
         return new Vehicle(
-                rs.getInt("VIN"),
+                rs.getString("VIN"),
                 rs.getInt("Year"),
                 rs.getString("Make"),
                 rs.getString("Model"),

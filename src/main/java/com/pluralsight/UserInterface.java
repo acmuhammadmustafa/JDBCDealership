@@ -1,6 +1,7 @@
 package com.pluralsight;
 
 import java.util.List;
+import java.util.Objects;
 
 public class UserInterface {
 
@@ -175,7 +176,7 @@ public class UserInterface {
 
     public void processAddVehicleRequest() {
         // UPDATE SO THAT IF an integer is inputted into a getString, it tells you to put in a STRING.
-        int getVin = ConsoleHelper.promptForInt("Enter vehicle's VIN");
+        String getVin = ConsoleHelper.promptForString("Enter vehicle's VIN");
         int getYear = ConsoleHelper.promptForInt("Enter vehicle's year");
         String getMake = ConsoleHelper.promptForString("Enter vehicle's make");
         String getModel = ConsoleHelper.promptForString("Enter vehicle's model");
@@ -199,12 +200,12 @@ public class UserInterface {
         displayVehicles(dealership.getAllVehicles());
 
         // Prompt for VIN
-        int vinToRemove = ConsoleHelper.promptForInt("Enter the VIN of the vehicle to remove");
+        String vinToRemove = ConsoleHelper.promptForString("Enter the VIN of the vehicle to remove");
 
         // Try to find the vehicle
         Vehicle vehicleToRemove = null;
         for (Vehicle vehicle : dealership.getAllVehicles()) {
-            if (vehicle.getVin() == vinToRemove) {
+            if (Objects.equals(vehicle.getVin(), vinToRemove)) {
                 vehicleToRemove = vehicle;
                 break;
             }
@@ -229,12 +230,12 @@ public class UserInterface {
         displayVehicles(dealership.getAllVehicles());
 
         // Prompt for VIN
-        int vinToSell = ConsoleHelper.promptForInt("Enter the VIN of the vehicle to sell");
+        String vinToSell = ConsoleHelper.promptForString("Enter the VIN of the vehicle to sell");
 
         // Try to find the vehicle
         Vehicle vehicleToSell = null;
         for (Vehicle vehicle : dealership.getAllVehicles()) {
-            if (vehicle.getVin() == vinToSell) {
+            if (Objects.equals(vehicle.getVin(), vinToSell)) {
                 vehicleToSell = vehicle;
                 break;
             }
@@ -260,12 +261,12 @@ public class UserInterface {
         displayVehicles(dealership.getAllVehicles());
 
         // Prompt for VIN
-        int vinToSell = ConsoleHelper.promptForInt("Enter the VIN of the vehicle to sell");
+        String vinToSell = ConsoleHelper.promptForString("Enter the VIN of the vehicle to sell");
 
         // Try to find the vehicle
         Vehicle vehicleToSell = null;
         for (Vehicle vehicle : dealership.getAllVehicles()) {
-            if (vehicle.getVin() == vinToSell) {
+            if (Objects.equals(vehicle.getVin(), vinToSell)) {
                 vehicleToSell = vehicle;
                 break;
             }

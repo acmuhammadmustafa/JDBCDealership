@@ -17,7 +17,7 @@ public class SalesDao {
             stmt.setString(1, contract.getDate());
             stmt.setString(2, contract.getCustomerName());
             stmt.setString(3, contract.getEmail());
-            stmt.setString(4, String.valueOf(contract.getVehicleSold().getVin()));
+            stmt.setString(4, (contract.getVehicleSold().getVin()));
             stmt.setDouble(5, contract.getSalesTax());
             stmt.setDouble(6, contract.getRecordingFee());
             stmt.setDouble(7, contract.getProcessFee());
@@ -36,7 +36,7 @@ public class SalesDao {
         }
     }
 
-    private void markVehicleAsSold(int vin) {
+    private void markVehicleAsSold(String vin) {
         String query = "update vehicles set Sold = true where vin = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
